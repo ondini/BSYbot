@@ -1,0 +1,9 @@
+# general files
+
+*.code-workspace
+
+# sensitive information
+key.txt
+
+# logs
+*.out 
