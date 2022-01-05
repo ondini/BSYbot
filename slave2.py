@@ -3,10 +3,9 @@ import time
 import base64
 
 GIST_ID = "799938c0850a634dfe9ce73436a00de0" #ID of github.gist
-BOT_I = 1
+BOT_I = 2
 
 INSTALL_TOOLS = True # Are gh and stegsnow already installed
-LOGIN = False # login needed
 
 # used filenames
 coverage_fn  = 'short1.txt'
@@ -23,7 +22,7 @@ def install_tools():
     """
     function installing neccessary tools
     """
-    print("=> Installing necessary tools..")
+    print("+> Installing necessary tools..")
     ret = os.popen(f'gh').read().split()
     if ret[0] == "bash:": # gh not installed yet
         os.system(f'curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg')
@@ -40,16 +39,10 @@ def install_tools():
 if __name__ == '__main__':
 
     print(f" ___________________ \n\nWelcome to the BSY slave bot {BOT_I} interface communicating at gist {GIST_ID}. \n"\
-    "This cli is read-only, but the parameters as bot id, filenames or github gist id can be changed in the source code.\n ___________________ \n")
+    "This cli is read-only, but the parameters as bot id, filenames or github gist id can be changed in the source code.\n \n")
 
     if INSTALL_TOOLS:
         install_tools()
-
-    if LOGIN:
-        print("=> Logging into gist.github.")
-        os.system(f'gh auth login --with-token < key.txt')
-
-
     os.system(f'stegsnow -C -m "{responses[0]}" {coverage_fn} {response_fn} 2> steg.out') # push init response to start communication and remove responses from previous usage
     os.system(f"gh gist edit {GIST_ID} -a {response_fn}")
 

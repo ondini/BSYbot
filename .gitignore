@@ -3,7 +3,7 @@
 *.code-workspace
 
 # sensitive information
-key.txt
+# key.txt # the key was replaced with placeholder
 
 # logs
-*.out 
+*.out

