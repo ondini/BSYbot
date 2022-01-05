@@ -12,7 +12,7 @@ TIMEOUT_ALIVE = 10 # timeout for checking if bot is alive
 PERIOD_ALIVE = 60 # period between alive checks
 
 INSTALL_TOOLS = True # Do gh and stegsnow need to be installed
-LOGIN = False # login needed
+LOGIN = True # login needed
 
 ############################################################3
 
